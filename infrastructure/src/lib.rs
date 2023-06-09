@@ -15,15 +15,15 @@ impl From<&User> for FileUser {
     }
 }
 
-pub struct FileSyStemUserRepository {
+pub struct FileSystemUserRepository {
     path: String,
 }
-impl FileSyStemUserRepository {
+impl FileSystemUserRepository {
     pub fn new(path: String) -> Self {
         Self { path }
     }
 }
-impl UserRepository for FileSyStemUserRepository {
+impl UserRepository for FileSystemUserRepository {
     fn save(&self, user: &domain::User) -> Result<(), domain::Error> {
         let mut file = File::create(format!("./{}/{}.txt", self.path, user.name)).unwrap();
         let file_user = FileUser::from(user);
