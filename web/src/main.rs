@@ -4,7 +4,7 @@ use actix_web::{
     web::{self, Data, Json},
     App, HttpResponse, HttpServer, ResponseError,
 };
-use application::Context;
+use context::Context;
 use domain::Name;
 use serde::Deserialize;
 

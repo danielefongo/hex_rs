@@ -229,7 +229,6 @@ name = "application"
 version = "0.1.0"
 dependencies = [
  "domain",
- "infrastructure",
 ]
 
 [[package]]
@@ -309,6 +308,14 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "context"
+version = "0.1.0"
+dependencies = [
+ "application",
+ "infrastructure",
+]
 
 [[package]]
 name = "convert_case"
@@ -1173,6 +1180,7 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "application",
+ "context",
  "domain",
  "env_logger",
  "serde",

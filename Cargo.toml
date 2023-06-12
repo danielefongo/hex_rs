@@ -1,7 +1,2 @@
 [workspace]
-members = [
-  "domain",
-  "infrastructure",
-  "application",
-  "web"
-]
+members = ["domain", "infrastructure", "application", "web", "context"]

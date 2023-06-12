@@ -1,5 +1,4 @@
 use domain::{Name, User, UserRepository};
-use infrastructure::FileSystemUserRepository;
 
 #[derive(Debug)]
 pub struct Error(String);
@@ -15,12 +14,5 @@ impl CreateUser {
     pub fn run(&self, name: Name) -> Result<(), Error> {
         self.users.save(&User::new(name)).unwrap();
         Ok(())
-    }
-}
-
-pub struct Context {}
-impl Context {
-    pub fn create_user_usecase(&self) -> CreateUser {
-        CreateUser::new(Box::new(FileSystemUserRepository::new("./db".to_owned())))
     }
 }
