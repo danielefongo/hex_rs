@@ -62,7 +62,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     HttpServer::new(|| {
         App::new()
-            .app_data(Data::new(Context {}))
+            .app_data(Data::new(Context::new()))
             .route("/", web::post().to(process_command))
     })
     .bind(("0.0.0.0", 8080))?

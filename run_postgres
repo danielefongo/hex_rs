@@ -1,0 +1,7 @@
+#!/bin/bash
+
+docker run --name hex-postgres -e POSTGRES_PASSWORD=root -e POSTGRES_USER=root -p 5432:5432 -d postgres
+sleep 1
+source .env
+cd infrastructure
+diesel setup

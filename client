@@ -1,3 +1,5 @@
+#!/bin/bash
+
 __call_create() {
 	curl -X POST -H 'content-type:application/json' -d "{\"CreateUser\":[\"$1\",$2]}" http://localhost:8080/
 }
