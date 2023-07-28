@@ -1,6 +1,7 @@
 use std::{fs::File, io::Write};
 
-use domain::{User, UserRepository};
+use auth::get_user;
+use domain::{Authenticate, User, UserRepository};
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -30,5 +31,16 @@ impl UserRepository for FileSystemUserRepository {
         file.write_all(serde_json::to_string(&file_user).unwrap().as_bytes())
             .unwrap();
         Ok(())
+    }
+}
+
+pub struct AuthenticateImpl;
+impl Authenticate for AuthenticateImpl {
+    fn authenticate(&self, username: &str) -> bool {
+        if let Some(authenticated_user) = get_user() {
+            authenticated_user == username
+        } else {
+            false
+        }
     }
 }

@@ -2,8 +2,9 @@ use std::fmt::Display;
 
 use actix_web::{
     web::{self, Data, Json},
-    App, HttpResponse, HttpServer, ResponseError,
+    App, HttpRequest, HttpResponse, HttpServer, ResponseError,
 };
+use auth::with_user;
 use context::Context;
 use domain::Name;
 use serde::Deserialize;
@@ -22,9 +23,23 @@ pub enum Command {
     CreateUser(String),
 }
 
-pub async fn process_command(state: Data<Context>, request: Json<Command>) -> HttpResponse {
-    match request.into_inner() {
-        Command::CreateUser(user) => state.create_user_usecase().run(Name(user)).unwrap(),
+pub async fn process_command(
+    request: HttpRequest,
+    state: Data<Context>,
+    data: Json<Command>,
+) -> HttpResponse {
+    let authenticated_user = request
+        .headers()
+        .get("user")
+        .map(|it| it.to_str().unwrap_or_default().to_string());
+
+    match data.into_inner() {
+        Command::CreateUser(user) => {
+            with_user(authenticated_user, async move {
+                state.create_user_usecase().run(Name(user)).unwrap()
+            })
+            .await
+        }
     };
 
     HttpResponse::Ok()

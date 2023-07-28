@@ -24,3 +24,7 @@ impl User {
 pub trait UserRepository {
     fn save(&self, user: &User) -> Result<(), Error>;
 }
+
+pub trait Authenticate {
+    fn authenticate(&self, username: &str) -> bool;
+}
