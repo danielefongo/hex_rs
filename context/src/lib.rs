@@ -1,5 +1,5 @@
 use application::{CreateUser, GetUser};
-use infrastructure::{AuthenticateImpl, FileSystemUserRepository};
+use infrastructure::{FileSystemUserRepository, ThreadedAuthenticate};
 
 pub struct Context {}
 impl Context {
@@ -9,7 +9,7 @@ impl Context {
     pub fn get_user_usecase(&self) -> GetUser {
         GetUser::new(
             Box::new(FileSystemUserRepository::new("./db".to_owned())),
-            Box::new(AuthenticateImpl),
+            Box::new(ThreadedAuthenticate),
         )
     }
 }

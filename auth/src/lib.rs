@@ -13,5 +13,5 @@ where
 }
 
 pub fn get_user() -> Option<String> {
-    USER.with(|u| u.clone())
+    USER.try_with(|u| u.clone()).unwrap_or_default()
 }
