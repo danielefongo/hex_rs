@@ -1,0 +1,11 @@
+__call_create() {
+	curl -X POST -H 'content-type:application/json' -d "{\"CreateUser\":[\"$1\",$2]}" http://localhost:8080/
+}
+
+__call_get() {
+	curl -X POST -H "user:$2" -H 'content-type:application/json' -d "{\"GetUser\":\"$1\"}" http://localhost:8080/
+}
+
+action=$1
+shift
+__call_"$action" "$@"
