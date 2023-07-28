@@ -10,11 +10,13 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 struct FileUser {
     name: String,
+    age: usize,
 }
 impl From<&User> for FileUser {
     fn from(user: &User) -> Self {
         FileUser {
             name: user.name.to_string(),
+            age: user.age,
         }
     }
 }
@@ -22,6 +24,7 @@ impl From<FileUser> for User {
     fn from(file_user: FileUser) -> Self {
         Self {
             name: domain::Name(file_user.name),
+            age: file_user.age,
         }
     }
 }

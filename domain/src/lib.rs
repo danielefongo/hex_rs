@@ -14,10 +14,11 @@ impl Display for Name {
 #[derive(Clone, Debug)]
 pub struct User {
     pub name: Name,
+    pub age: usize,
 }
 impl User {
-    pub fn new(name: Name) -> Self {
-        Self { name }
+    pub fn new(name: Name, age: usize) -> Self {
+        Self { name, age }
     }
 }
 

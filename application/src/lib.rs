@@ -11,8 +11,8 @@ impl CreateUser {
     pub fn new(users: Box<dyn UserRepository>) -> Self {
         Self { users }
     }
-    pub fn run(&self, name: Name) -> Result<(), Error> {
-        self.users.save(&User::new(name)).unwrap();
+    pub fn run(&self, name: Name, age: usize) -> Result<(), Error> {
+        self.users.save(&User::new(name, age)).unwrap();
         Ok(())
     }
 }

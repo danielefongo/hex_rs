@@ -21,7 +21,7 @@ impl Display for Error {
 
 #[derive(Debug, Deserialize)]
 pub enum Command {
-    CreateUser(String),
+    CreateUser(String, usize),
     GetUser(String),
 }
 
@@ -31,8 +31,8 @@ pub async fn process_command(
     data: Json<Command>,
 ) -> HttpResponse {
     let response = match data.into_inner() {
-        Command::CreateUser(user) => {
-            state.create_user_usecase().run(Name(user)).unwrap();
+        Command::CreateUser(user, age) => {
+            state.create_user_usecase().run(Name(user), age).unwrap();
 
             json!({ "status": "Ok" })
         }
@@ -47,7 +47,7 @@ pub async fn process_command(
             })
             .await;
 
-            json!({ "name": user.name.to_string() })
+            json!({ "name": user.name.to_string(), "age": user.age })
         }
     };
 
