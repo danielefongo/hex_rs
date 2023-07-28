@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 #[derive(Debug)]
-pub struct Error(String);
+pub struct Error(pub String);
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub struct Name(pub String);
@@ -23,6 +23,7 @@ impl User {
 
 pub trait UserRepository {
     fn save(&self, user: &User) -> Result<(), Error>;
+    fn get(&self, name: &Name) -> Result<User, Error>;
 }
 
 pub trait Authenticate {

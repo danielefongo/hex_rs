@@ -1,10 +1,13 @@
-use std::{fs::File, io::Write};
+use std::{
+    fs::{self, File},
+    io::Write,
+};
 
 use auth::get_user;
 use domain::{Authenticate, User, UserRepository};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 struct FileUser {
     name: String,
 }
@@ -13,6 +16,20 @@ impl From<&User> for FileUser {
         FileUser {
             name: user.name.to_string(),
         }
+    }
+}
+impl From<FileUser> for User {
+    fn from(file_user: FileUser) -> Self {
+        Self {
+            name: domain::Name(file_user.name),
+        }
+    }
+}
+impl TryFrom<String> for FileUser {
+    type Error = domain::Error;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        serde_json::from_str(&value).map_err(|_| domain::Error("Invalid string".to_owned()))
     }
 }
 
@@ -31,6 +48,13 @@ impl UserRepository for FileSystemUserRepository {
         file.write_all(serde_json::to_string(&file_user).unwrap().as_bytes())
             .unwrap();
         Ok(())
+    }
+
+    fn get(&self, name: &domain::Name) -> Result<User, domain::Error> {
+        Ok(fs::read_to_string(format!("./{}/{}.txt", self.path, name))
+            .map_err(|_| domain::Error("Not found".to_string()))
+            .and_then(FileUser::try_from)?
+            .into())
     }
 }
 

@@ -8,6 +8,7 @@ use auth::with_user;
 use context::Context;
 use domain::Name;
 use serde::Deserialize;
+use serde_json::json;
 
 #[derive(Debug)]
 pub struct Error;
@@ -21,6 +22,7 @@ impl Display for Error {
 #[derive(Debug, Deserialize)]
 pub enum Command {
     CreateUser(String),
+    GetUser(String),
 }
 
 pub async fn process_command(
@@ -28,23 +30,30 @@ pub async fn process_command(
     state: Data<Context>,
     data: Json<Command>,
 ) -> HttpResponse {
-    let authenticated_user = request
-        .headers()
-        .get("user")
-        .map(|it| it.to_str().unwrap_or_default().to_string());
-
-    match data.into_inner() {
+    let response = match data.into_inner() {
         Command::CreateUser(user) => {
-            with_user(authenticated_user, async move {
-                state.create_user_usecase().run(Name(user)).unwrap()
+            state.create_user_usecase().run(Name(user)).unwrap();
+
+            json!({ "status": "Ok" })
+        }
+        Command::GetUser(user) => {
+            let authenticated_user = request
+                .headers()
+                .get("user")
+                .map(|it| it.to_str().unwrap_or_default().to_string());
+
+            let user = with_user(authenticated_user, async move {
+                state.get_user_usecase().run(Name(user)).unwrap()
             })
-            .await
+            .await;
+
+            json!({ "name": user.name.to_string() })
         }
     };
 
     HttpResponse::Ok()
         .content_type("application/json")
-        .body("Ok")
+        .body(response.to_string())
 }
 
 #[actix_web::main]
